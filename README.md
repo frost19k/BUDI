@@ -27,9 +27,9 @@ I have a number of Docker Images that I like to keep updated. This is a simple s
 | -v --version | Display version information                         |
 
 - BUDI accepts a simple text file as input
-- Each line must be an docker image of the form "repo/name:tag"
-- "repo" & "tag" are optional
-- Example:
+- Each line must be an docker image of the form `repo/name:tag`
+- `repo` & `tag` are optional
+- For e.g.
 ```Bash
 ❯ cat imageList.txt
 bitnami/wordpress:6-debian-11
@@ -38,3 +38,6 @@ kalilinux/kali-last-release
 nginx:stable-alpine-perl
 ```
 ![screenshot.png](assets/screenshot.png)
+
+# Thanks
+Special thanks to [@gabrieldemarmiesse](https://github.com/gabrieldemarmiesse) for [python-on-whales](https://github.com/gabrieldemarmiesse/python-on-whales) which allowed me to completely avoid `subprocess`
