@@ -1,0 +1,2 @@
+python-on-whales>=0.55,<0.56
+emoji>=2.2,<2.3
