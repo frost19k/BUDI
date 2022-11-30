@@ -18,9 +18,13 @@ I have a number of Docker Images that I like to keep updated. This is a simple s
 
 # Usage
 
+```Bash
+❯ budi -f imageList.txt
+```
+
 | Parameter    | Description                                         |
 | :--          | :--                                                 |
-| -f --file    | Input file containing docker image names            |
+| -f --file    | Input file containing docker image names (required) |
 | -t --threads | Number of concurrent threads (default: 2)           |
 | -d --delete  | Delete existing image after update (default: false) |
 | -F --force   | Froce remove image after update (default: false)    |
