@@ -41,7 +41,8 @@ golang:1.17-alpine
 kalilinux/kali-last-release
 nginx:stable-alpine-perl
 ```
-![screenshot.png](assets/screenshot.png)
+
+<img src="assets/screenshot.png" height=398>
 
 # Thanks
 Special thanks to [@gabrieldemarmiesse](https://github.com/gabrieldemarmiesse) for [python-on-whales](https://github.com/gabrieldemarmiesse/python-on-whales) which allowed me to completely avoid `subprocess`
