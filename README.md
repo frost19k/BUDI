@@ -46,3 +46,5 @@ nginx:stable-alpine-perl
 
 # Thanks
 Special thanks to [@gabrieldemarmiesse](https://github.com/gabrieldemarmiesse) for [python-on-whales](https://github.com/gabrieldemarmiesse/python-on-whales) which allowed me to completely avoid `subprocess`
+
+Also, thanks to [@BMitch](https://stackoverflow.com/users/596285/bmitch) on StackOver flow for [this](https://stackoverflow.com/a/62627500).

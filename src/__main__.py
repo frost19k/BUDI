@@ -12,11 +12,10 @@ from python_on_whales.exceptions import NoSuchImage
 from concurrent.futures import ThreadPoolExecutor
 
 from .__version__ import __version__
-from . import CustomLogger as cl
 
 ###>> Configure logging
-logger = logging.getLogger('drac')
-c = cl.CustomFormatter.colors
+from .CustomLogger import colors as c
+logger = logging.getLogger('budi')
 
 def check_internet_connection():
     http = urllib3.PoolManager(timeout=3.0)

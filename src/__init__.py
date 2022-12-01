@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-import logging
-from src import CustomLogger as cl
+###>> Configure version info
+from .__version__ import __version__
 
 ###>> Configure logger
-logger = cl.CustomLogger('drac')
+from .CustomLogger import CustomLogger
+logger = CustomLogger('budi')
 logger.propagate = False
