@@ -11,6 +11,7 @@ from python_on_whales import docker
 from python_on_whales.exceptions import NoSuchImage
 from concurrent.futures import ThreadPoolExecutor
 
+###>> Configure version info
 from .__version__ import __version__
 
 ###>> Configure logging
@@ -103,34 +104,17 @@ def run(i:str, delete_image:bool=False, force_delete:str=False):
 
 def main():
     parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "-f", "--file", help="File containing docker image names",
-        action="store", type=str, required=True
-    )
-
-    parser.add_argument(
-        "-t", "--threads", help="Number of concurrent threads (default: 2)",
-        action="store", type=int, required=False, default=2
-    )
-
-    parser.add_argument(
-        "-d", "--delete", help="Delete existing image after update (default: false)",
-        action="store_true"
-    )
-
-    parser.add_argument(
-        "-F", "--force", help="Froce remove image after update (default: false)",
-        action="store_true"
-    )
-
-    parser.add_argument(
-        '-v', '--version', help='Display version information',
-        action='version', version=f'BUDI v{__version__}'
-    )
-
+    parser.add_argument("-f", "--file", help="File containing docker image names",
+        action="store", type=str, required=True)
+    parser.add_argument("-t", "--threads", help="Number of concurrent threads (default: 2)",
+        action="store", type=int, required=False, default=2)
+    parser.add_argument("-d", "--delete", help="Delete existing image after update (default: false)",
+        action="store_true")
+    parser.add_argument("-F", "--force", help="Froce remove image after update (default: false)",
+        action="store_true")
+    parser.add_argument('-v', '--version', help='Display version information',
+        action='version', version=f'BUDI v{__version__}')
     args = parser.parse_args()
-
 
     ###>> Verify internet connection
     logger.info(f'Checking your internet connectivity.', extra={'msgC':''})
@@ -156,3 +140,6 @@ def main():
 
     logger.info(f'All done!!!', extra={'msgC':''})
     quit()
+
+if __name__ == '__main__':
+    main()
