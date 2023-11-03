@@ -136,7 +136,8 @@ def main():
 
     with ThreadPoolExecutor(max_workers=int(args.threads)) as executor:
         for i in images:
-            executor.submit(run, i, args.delete, args.force)
+            if not i.startswith('#'):
+                executor.submit(run, i, args.delete, args.force)
 
     logger.info(f'All done!!!', extra={'msgC':''})
     quit()
