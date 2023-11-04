@@ -51,17 +51,37 @@ def get_remote_image_hash(image:dict) -> str:
 
     ##> Configure custom headers
     headers = {
-        "Accept": "application/vnd.docker.distribution.manifest.v2+json",
+        "Accept": "application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json",
         "Authorization": f'Bearer {token}'
     }
+
 
     ##> Get the remote image digest
     url = f'https://registry-1.docker.io/v2/{image["repo"]}/{image["name"]}/manifests/{image["tag"]}'
     r = http.request('GET', url, headers=headers, preload_content=False)
     digest = json.loads(r.data)
-    digest = digest['config']['digest']
 
-    return digest
+    ##> Check the mediaType to determine the type of the response
+    if digest['mediaType'] == "application/vnd.docker.distribution.manifest.v2+json":
+        ##> Single-architecture image
+        return digest['config']['digest']
+
+    elif digest['mediaType'] == "application/vnd.oci.image.index.v1+json":
+        # Get the digest for the "amd64" architecture from the manifest list.
+        for manifest in digest['manifests']:
+            if manifest['platform']['architecture'] == "amd64":
+                amd64_manifest_digest = manifest['digest']
+
+                # Fetch the actual manifest using the digest
+                url = f'https://registry-1.docker.io/v2/{image["repo"]}/{image["name"]}/manifests/{amd64_manifest_digest}'
+                r = http.request('GET', url, headers=headers, preload_content=False)
+                actual_manifest = json.loads(r.data)
+
+                # Return the digest of the image layers from the actual manifest
+                return actual_manifest['config']['digest']
+
+    ##> Return None if the mediaType is not recognized
+    return None
 
 def run(i:str, delete_image:bool=False, force_delete:str=False):
     logger.info(f'Checking image {i}', extra={'msgC':''})
@@ -72,6 +92,10 @@ def run(i:str, delete_image:bool=False, force_delete:str=False):
 
     remote_image_hash = get_remote_image_hash(image)
 
+    if remote_image_hash is None:
+        logger.error(f'Image {i} not found remotely')
+        return
+
     try:
         local_image = get_local_image(image)
         local_image_hash = local_image.id
@@ -81,10 +105,10 @@ def run(i:str, delete_image:bool=False, force_delete:str=False):
         local_image_hash = 'NaH'
 
     if local_image_hash == remote_image_hash:
-        logger.info(f'Image {i} is up to date', extra={'msgC':c["green"]})
+        logger.info(f'Image {i} {c["green"]}is up to date{c["reset"]}', extra={'msgC':''})
     else:
         if local_image_hash == 'NaH':
-            logger.info(f'{c["cyan"]}Installing{c["reset"]} {i}', extra={'msgC':''})
+            logger.info(f'{c["cyan"]}Downloading{c["reset"]} {i}', extra={'msgC':''})
         else:
             logger.info(f'{c["cyan"]}Updating{c["reset"]} {i}', extra={'msgC':''})
 
@@ -128,6 +152,7 @@ def main():
         logger.critical(f'File not found {imagesFile}')
     else:
         images = imagesFile.open('r').read().splitlines()
+        images = list(filter(None, images))
 
     ###>> Run the update
     ##> Parse the input into dict with keys ['repo', 'name', 'tag']
