@@ -55,7 +55,6 @@ def get_remote_image_hash(image:dict) -> str:
         "Authorization": f'Bearer {token}'
     }
 
-
     ##> Get the remote image digest
     url = f'https://registry-1.docker.io/v2/{image["repo"]}/{image["name"]}/manifests/{image["tag"]}'
     r = http.request('GET', url, headers=headers, preload_content=False)
@@ -84,7 +83,7 @@ def get_remote_image_hash(image:dict) -> str:
     return None
 
 def run(i:str, delete_image:bool=False, force_delete:str=False):
-    logger.info(f'Checking image {i}', extra={'msgC':''})
+    logger.info(f'Checking image {c["cyan"]}{i}{c["reset"]}', extra={'msgC':''})
 
     image = regex.match(i).groupdict()
     image['repo'] = f'{image["repo"]}' if image['repo'] else f'library'
@@ -105,12 +104,12 @@ def run(i:str, delete_image:bool=False, force_delete:str=False):
         local_image_hash = 'NaH'
 
     if local_image_hash == remote_image_hash:
-        logger.info(f'Image {i} {c["green"]}is up to date{c["reset"]}', extra={'msgC':''})
+        logger.info(f'Image {c["green"]}{i}{c["reset"]} is up to date', extra={'msgC':''})
     else:
         if local_image_hash == 'NaH':
-            logger.info(f'{c["cyan"]}Downloading{c["reset"]} {i}', extra={'msgC':''})
+            logger.info(f'Downloading {c["cyan"]}{i}{c["reset"]}', extra={'msgC':''})
         else:
-            logger.info(f'{c["cyan"]}Updating{c["reset"]} {i}', extra={'msgC':''})
+            logger.info(f'Updating {c["cyan"]}{i}{c["reset"]}', extra={'msgC':''})
 
         docker.pull(
             "{image_repo}{image_name}{image_tag}".format(
@@ -121,7 +120,7 @@ def run(i:str, delete_image:bool=False, force_delete:str=False):
         )
 
         if delete_image and bool(local_image):
-            logger.info(f'{c["red"]}Deleting{c["reset"]} old {i}', extra={'msgC':''})
+            logger.info(f'Deleting old {c["red"]}{i}{c["reset"]}', extra={'msgC':''})
             docker.image.remove(local_image, force=force_delete)
 
     return
